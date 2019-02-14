@@ -5,7 +5,7 @@
 $ErrorActionPreference = "Continue"
 
 # This function checks to see if an account exists on a remote computer
-function UserCheck($servername, $user) {
+function check-user($servername, $user) {
     $exists = $false
     try {
         $exists = [ADSI]::Exists("WinNT://$servername/$user")
@@ -20,8 +20,8 @@ function UserCheck($servername, $user) {
 # UserCheck "SERVER-NAME-HERE" "ACCOUNT-NAME-HERE"
 
 # This function resets a local account on a remote computer
-function ResetLocalAccountPW ($servername, $account, $password) { 
-    if (UserCheck $servername $account) {
+function reset-localaccountpw ($servername, $account, $password) { 
+    if (check-user $servername $account) {
         # Create computer object
         [ADSI]$server = "WinNT://$servername"
         $user = ([ADSI]"WinNT://$servername/$account")
@@ -45,5 +45,5 @@ foreach ($server in $servers) {
 
     # Write-Host $fqdn
 
-    ResetLocalAccountPW $fqdn $accountname $newpassword
+    reset-localaccountpw $fqdn $accountname $newpassword
 }
