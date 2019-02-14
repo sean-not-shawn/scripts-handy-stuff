@@ -1,0 +1,61 @@
+<#
+    This script can add a local account, domain account or AD Group to the Local Admin Group on remote computers. 
+    for local accounts, the script will create the account before adding it to the Local Admin Group
+#>
+
+function add-localadmin ($servername, $username, $password, $description) {
+    write-host "Adding local account $username - $description"
+    
+    [ADSI]$server="WinNT://$servername"
+    $AdminGroup = [ADSI]"WinNT://$servername/Administrators,group"
+
+    # To Create Local Admin Account
+    $LocalAdmin=$server.Create("User","$username")
+    $LocalAdmin.SetPassword("$password")
+    $LocalAdmin.SetInfo()
+    $LocalAdmin.Put("Description","$description")
+    $flag=$LocalAdmin.UserFlags.value -bor 0x10000
+    $LocalAdmin.put("userflags",$flag)
+    $LocalAdmin.SetInfo()
+
+    $AdminGroup.Add($LocalAdmin.Path)
+}
+
+function add-adminaccount ($servername, $domain, $account) {
+    write-host "Adding AD Account $domain\$account"
+    
+    [ADSI]$server="WinNT://$servername"
+    $AdminGroup = [ADSI]"WinNT://$servername/Administrators,group"
+    
+    # Add AD Account
+    $User = [ADSI]"WinNT://$domain/$account,user"
+    $AdminGroup.Add($User.Path) 
+}
+
+function add-admingroup ($servername, $domain, $group) {
+    write-host "Adding AD Group $domain\$group"
+    
+    [ADSI]$server="WinNT://$servername"
+    $AdminGroup = [ADSI]"WinNT://$servername/Administrators,group"
+    
+    # Add AD Group
+    $ADgroup = [ADSI]"WinNT://$domain/$group,group"
+    $AdminGroup.Add($ADgroup.Path) 
+}
+
+cls
+
+# Modify Server List Text File's Path
+foreach($line in Get-Content CSV\servers.txt) {
+    write-host "Server Name $line"
+    
+    # Uncomment line below to add a Local Account
+    # add-localadmin $line "USERNAME-HERE" "PW-HERE" "DESCRIPTION-HERE"
+
+    # Uncomment line below to add a User/Service Account
+    # add-adminaccount $line "DOMAIN-HERE" "ACCOUNT-NAME-HERE"
+
+    # Uncomment line below to add an AD Group
+    # add-admingroup $line "DOMAIN-HERE" "GROUP-NAME-HERE"
+
+}
