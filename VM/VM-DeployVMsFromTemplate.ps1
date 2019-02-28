@@ -155,19 +155,10 @@ $vms = Import-Csv $csv
 $vmsexist = 0
 $vmsexistlist = ""
 
-
 foreach ($vm in $vms) { 
     $vmcheck = get-vm -name $vm.Name -ErrorAction SilentlyContinue  
     If ($vmcheck){  
         # Write-Host $vm.Name " already exists" 
-
-# This area checks to see if VMs with the requested names already exist
-$vmsexist = 0
-$vmsexistlist = ""
-
-foreach ($vm in $vms) { 
-    $vmcheck = get-vm -name $vm.Name -ErrorAction SilentlyContinue  
-    If ($vmcheck){  
         $vmsexist++
         $vmsexistlist += $vm.Name + " "
     }  
