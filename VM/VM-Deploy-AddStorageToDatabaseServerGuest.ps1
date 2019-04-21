@@ -4,8 +4,10 @@
     Notes: 
     This script increases the size of disk one from the default template size (if required) and initializes/formats disks to be used as D:, Base E: and mount points. Part 1 is VM-Deploy-AddStorageToDatabaseServerVM.ps1
     It also changes the optical drive to F:
+    Run this script directly on the server with the PowerShell ISE.
     To do: 
     1. Add error catching. The script should not continue if it encounters an error.
+    2. Modify the script so it can be run remotely.
 #>
 
 # Method to change optical drive letter
