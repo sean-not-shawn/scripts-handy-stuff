@@ -1,0 +1,3 @@
+SERVERNAME01.domain.tld
+SERVERNAME02.domain.tld
+SERVERNAME03.domain.tld
